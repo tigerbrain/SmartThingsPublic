@@ -68,7 +68,15 @@ def motionHandler(evt) {
 	log.debug "$evt.name: $evt.value"
 
     def currMillisecs = now()
-    def lastActivity = lights.currentState("switch").date
+    def lightStateObj = lights.currentState("switch")
+    def lightState = lightStateObj.value
+    
+    if (lightState == "on") {
+        log.debug "Failed state check: Switch is already ${lightState}"
+        return
+    }    
+    
+    def lastActivity = lightStateObj.date
     def lastActivityMillisecs = lastActivity.getTime()
     def minInactiveMillisecs = timeOffset(minInactiveMinutes)
     def timeDiff = currMillisecs - lastActivityMillisecs
